@@ -3,26 +3,26 @@ package jm.task.core.jdbc.util;
 
 import jm.task.core.jdbc.model.User;
 import org.hibernate.SessionFactory;
+import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.cfg.Configuration;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 public class Util {
     public static SessionFactory getSession() {
         Properties properties = new Properties();
 
-        try (InputStream is = new FileInputStream("src/main/resources/hibernate.properties")) {
-            properties.load(is);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        properties.put(AvailableSettings.DRIVER, "com.mysql.jdbc.Driver");
+        properties.put(AvailableSettings.URL, "jdbc:mysql://localhost:3306/MyBDtest");
+        properties.put(AvailableSettings.USER, "root");
+        properties.put(AvailableSettings.PASS, "root");
+        properties.put(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS, "thread");
+        properties.put(AvailableSettings.DIALECT, "org.hibernate.dialect.MySQLDialect");
+        properties.put(AvailableSettings.HBM2DDL_AUTO, "create");
+        properties.put(AvailableSettings.SHOW_SQL, "true");
 
-        SessionFactory factory = new Configuration().addProperties(properties).addAnnotatedClass(User.class)
+
+        return new Configuration().setProperties(properties).addAnnotatedClass(User.class)
                 .buildSessionFactory();
-
-        return factory;
     }
 }
